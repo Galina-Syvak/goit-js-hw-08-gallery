@@ -1,22 +1,24 @@
-// +1. Создание и рендер разметки по массиву данных galleryItems из app.js и предоставленному шаблону.
-// 3. Открытие модального окна по клику на элементе галереи.
-// 4. Подмена значения атрибута src элемента img.lightbox__image.
-// 5. Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
-// 6. Очистка значения атрибута src элемента img.lightbox__image. Это необходимо для того, чтобы при следующем открытии модального окна, пока грузится изображение, мы не видели предыдущее.
-
 import galleryItems from './gallery-items.js';
 
-const listGallery = document.querySelector('.js-gallery');
+const refs = {
+  listGallery: document.querySelector('.js-gallery'),
+  isModalWindow: document.querySelector('.js-lightbox'),
+  isImgModal: document.querySelector('.lightbox__image'),
+  isOverlay: document.querySelector('.lightbox__overlay'),
+  btnModalClose: document.querySelector('[data-action="close-lightbox"]'),
+};
+
 const galleryMarkup = makeGalleryItemsMarkup(galleryItems);
+refs.listGallery.insertAdjacentHTML('beforeend', galleryMarkup);
 
-listGallery.insertAdjacentHTML('beforeend', galleryMarkup);
-
-listGallery.addEventListener('click', onTargetImgClick);
+refs.listGallery.addEventListener('click', onTargetImgClick);
+refs.btnModalClose.addEventListener('click', onCloseModal);
+refs.isOverlay.addEventListener('click', onCloseModal);
 
 function makeGalleryItemsMarkup(images) {
   return images
     .map(
-      ({ original, description }) =>
+      ({ preview, original, description }) =>
         `<li class="gallery__item">
       <a
         class="gallery__link"
@@ -24,7 +26,7 @@ function makeGalleryItemsMarkup(images) {
       >
         <img
           class="gallery__image"
-          src="${original}"
+          src="${preview}"
           data-source="${original}"
           alt="${description}"
         />
@@ -34,8 +36,6 @@ function makeGalleryItemsMarkup(images) {
     .join('');
 }
 
-// 2. Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
-
 function onTargetImgClick(evt) {
   evt.preventDefault();
   const isGalleryImgEl = evt.target.classList.contains('gallery__image');
@@ -44,6 +44,19 @@ function onTargetImgClick(evt) {
     return;
   }
   const element = evt.target;
-    console.log(element);
-    const 
+
+  refs.isImgModal.src = element.dataset.source;
+  refs.isImgModal.alt = element.alt;
+
+  onOpenModal();
+}
+
+function onOpenModal() {
+  refs.isModalWindow.classList.add('is-open');
+}
+
+function onCloseModal() {
+  refs.isModalWindow.classList.remove('is-open');
+  refs.isImgModal.src = '';
+  refs.isImgModal.alt = '';
 }
