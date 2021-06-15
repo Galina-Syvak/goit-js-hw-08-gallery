@@ -8,18 +8,13 @@ const refs = {
   btnModalClose: document.querySelector('[data-action="close-lightbox"]'),
 };
 
-const galleryMarkup = makeGalleryItemsMarkup(galleryItems);
-refs.listGallery.insertAdjacentHTML('beforeend', galleryMarkup);
-
 refs.listGallery.addEventListener('click', onTargetImgClick);
 refs.btnModalClose.addEventListener('click', onCloseModal);
 refs.isOverlay.addEventListener('click', onCloseModal);
 
-function makeGalleryItemsMarkup(images) {
-  return images
-    .map(
-      ({ preview, original, description }) =>
-        `<li class="gallery__item">
+const makeGalleryItemsMarkup = galleryItems
+  .map(({ preview, original, description }) => {
+    return `<li class="gallery__item">
       <a
         class="gallery__link"
         href="${original}"
@@ -31,10 +26,11 @@ function makeGalleryItemsMarkup(images) {
           alt="${description}"
         />
       </a>
-    </li>`,
-    )
-    .join('');
-}
+    </li>`;
+  })
+  .join('');
+
+refs.listGallery.insertAdjacentHTML('beforeend', makeGalleryItemsMarkup);
 
 function onTargetImgClick(evt) {
   evt.preventDefault();
