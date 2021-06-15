@@ -49,6 +49,8 @@ function onTargetImgClick(evt) {
   refs.isImgModal.alt = element.alt;
 
   onOpenModal();
+
+  window.addEventListener('keydown', onTargetEscapeClick);
 }
 
 function onOpenModal() {
@@ -59,4 +61,9 @@ function onCloseModal() {
   refs.isModalWindow.classList.remove('is-open');
   refs.isImgModal.src = '';
   refs.isImgModal.alt = '';
+}
+function onTargetEscapeClick(evt) {
+  if (evt.key === 'Escape') {
+    onCloseModal();
+  }
 }
