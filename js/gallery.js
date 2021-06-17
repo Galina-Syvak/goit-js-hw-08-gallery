@@ -9,8 +9,6 @@ const refs = {
 };
 
 refs.listGallery.addEventListener('click', onTargetImgClick);
-refs.btnModalClose.addEventListener('click', onCloseModal);
-refs.isOverlay.addEventListener('click', onCloseModal);
 
 const makeGalleryItemsMarkup = galleryItems
   .map(({ preview, original, description }) => {
@@ -39,13 +37,14 @@ function onTargetImgClick(evt) {
   if (!isGalleryImgEl) {
     return;
   }
+
   const element = evt.target;
 
-  refs.isImgModal.src = element.dataset.source;
-  refs.isImgModal.alt = element.alt;
-
+  overrideImageValue(element);
   onOpenModal();
 
+  refs.btnModalClose.addEventListener('click', onCloseModal);
+  refs.isOverlay.addEventListener('click', onCloseModal);
   window.addEventListener('keydown', onTargetEscapeClick);
 }
 
@@ -57,9 +56,18 @@ function onCloseModal() {
   refs.isModalWindow.classList.remove('is-open');
   refs.isImgModal.src = '';
   refs.isImgModal.alt = '';
+
+  refs.btnModalClose.removeEventListener('click', onCloseModal);
+  refs.isOverlay.removeEventListener('click', onCloseModal);
 }
+
 function onTargetEscapeClick(evt) {
   if (evt.key === 'Escape') {
     onCloseModal();
   }
+}
+
+function overrideImageValue(el) {
+  refs.isImgModal.src = el.dataset.source;
+  refs.isImgModal.alt = el.alt;
 }
